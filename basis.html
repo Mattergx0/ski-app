@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ski App</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="hero">
+    <h1>Ski Gebieden Oostenrijk</h1>
+    <p>Zoek jouw ideale wintersport bestemming</p>
+    <input type="text" id="search" class="search-bar" placeholder="Zoek skigebied..." />
+  </header>
+
+  <section class="container" id="areaList">
+    <!-- Dynamisch gevuld door JavaScript -->
+  </section>
+
+  <script>
+    const skiAreas = [
+      { name: "Mayrhofen", special: "Harakiri piste", height: "2500m", region: "Tirol" },
+      { name: "Ischgl", special: "Silvretta Arena", height: "2872m", region: "Tirol" },
+      { name: "Sölden", special: "Gletsjer & Rettenbach", height: "3340m", region: "Tirol" },
+      { name: "Serfaus-Fiss-Ladis", special: "Familieskigebied", height: "2828m", region: "Tirol" },
+      { name: "Zell am See", special: "Schmittenhöhe", height: "2000m", region: "Salzburg" },
+      { name: "Obertauern", special: "Sneeuwzeker", height: "2315m", region: "Salzburg" },
+      { name: "Kitzbühel", special: "Hahnenkamm", height: "2000m", region: "Tirol" },
+      { name: "St. Anton", special: "Arlberg gebied", height: "2811m", region: "Tirol" },
+      { name: "Lech", special: "Luxueus gebied", height: "2450m", region: "Vorarlberg" },
+      { name: "Saalbach-Hinterglemm", special: "Skicircus", height: "2096m", region: "Salzburg" }
+    ];
+
+    const listEl = document.getElementById("areaList");
+    const searchEl = document.getElementById("search");
+
+    function renderAreas(areas) {
+      listEl.innerHTML = "";
+      areas.forEach(a => {
+        listEl.innerHTML += `
+          <div class="card">
+            <h2>${a.name}</h2>
+            <p><strong>Bijzonder:</strong> ${a.special}</p>
+            <p><strong>Hoogte:</strong> ${a.height}</p>
+            <p><strong>Regio:</strong> ${a.region}</p>
+          </div>
+        `;
+      });
+    }
+
+    searchEl.addEventListener("input", () => {
+      const value = searchEl.value.toLowerCase();
+      const filtered = skiAreas.filter(a => a.name.toLowerCase().includes(value));
+      renderAreas(filtered);
+    });
+
+    renderAreas(skiAreas);
+  </script>
+</body>
+</html>
