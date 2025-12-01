@@ -1,60 +1,232 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="nl">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Ski App</title>
-  <link rel="stylesheet" href="style.css" />
-</head>
-<body>
-  <header class="hero">
-    <h1>Ski Gebieden Oostenrijk</h1>
-    <p>Zoek jouw ideale wintersport bestemming</p>
-    <input type="text" id="search" class="search-bar" placeholder="Zoek skigebied..." />
-  </header>
-
-  <section class="container" id="areaList">
-    <!-- Dynamisch gevuld door JavaScript -->
-  </section>
-
-  <script>
-    const skiAreas = [
-      { name: "Mayrhofen", special: "Harakiri piste", height: "2500m", region: "Tirol" },
-      { name: "Ischgl", special: "Silvretta Arena", height: "2872m", region: "Tirol" },
-      { name: "Sölden", special: "Gletsjer & Rettenbach", height: "3340m", region: "Tirol" },
-      { name: "Serfaus-Fiss-Ladis", special: "Familieskigebied", height: "2828m", region: "Tirol" },
-      { name: "Zell am See", special: "Schmittenhöhe", height: "2000m", region: "Salzburg" },
-      { name: "Obertauern", special: "Sneeuwzeker", height: "2315m", region: "Salzburg" },
-      { name: "Kitzbühel", special: "Hahnenkamm", height: "2000m", region: "Tirol" },
-      { name: "St. Anton", special: "Arlberg gebied", height: "2811m", region: "Tirol" },
-      { name: "Lech", special: "Luxueus gebied", height: "2450m", region: "Vorarlberg" },
-      { name: "Saalbach-Hinterglemm", special: "Skicircus", height: "2096m", region: "Salzburg" }
-    ];
-
-    const listEl = document.getElementById("areaList");
-    const searchEl = document.getElementById("search");
-
-    function renderAreas(areas) {
-      listEl.innerHTML = "";
-      areas.forEach(a => {
-        listEl.innerHTML += `
-          <div class="card">
-            <h2>${a.name}</h2>
-            <p><strong>Bijzonder:</strong> ${a.special}</p>
-            <p><strong>Hoogte:</strong> ${a.height}</p>
-            <p><strong>Regio:</strong> ${a.region}</p>
-          </div>
-        `;
-      });
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>SkiGids Oostenrijk</title>
+  <style>
+    :root{
+      --bg: #052037;
+      --primary: #0d4da3;
+      --secondary: #0a356f;
+      --text: #e9f2ff;
+      --muted: #9db7d3;
+      --card: #073459;
+      --glass: rgba(255,255,255,0.06);
+      --radius: 18px;
+      font-family: "Inter", system-ui;
     }
 
-    searchEl.addEventListener("input", () => {
-      const value = searchEl.value.toLowerCase();
-      const filtered = skiAreas.filter(a => a.name.toLowerCase().includes(value));
-      renderAreas(filtered);
-    });
+    body{
+      margin:0; background:var(--bg); color:var(--text);
+      background-image:linear-gradient(180deg,#04182a, #073459);
+      min-height:100vh;
+      animation: fadeIn 1s ease;
+    }
 
-    renderAreas(skiAreas);
-  </script>
+    @keyframes fadeIn{ from{opacity:0;} to{opacity:1;} }
+    @keyframes slideUp{ from{transform:translateY(20px); opacity:0;} to{transform:translateY(0); opacity:1;} }
+    @keyframes glow{ 0%{box-shadow:0 0 0px #0d4da3;} 100%{box-shadow:0 0 12px #0d4da3;} }
+
+    header{
+      padding:32px 40px; display:flex; align-items:center; gap:20px;
+      background:linear-gradient(90deg,#062a48,#0a356f);
+      box-shadow:0 6px 20px rgba(0,0,0,0.4);
+      animation: slideUp .8s ease;
+    }
+
+    header h1{
+      margin:0; font-size:32px; font-weight:700;
+    }
+
+    .searchbar{
+      margin:30px auto; max-width:900px;
+      background:var(--card); padding:16px 24px; border-radius:var(--radius);
+      display:flex; gap:12px; align-items:center;
+      border:1px solid var(--glass); animation: slideUp 1s ease;
+    }
+
+    input{
+      flex:1; background:transparent; border:0; color:var(--text); font-size:18px;
+      outline:none;
+    }
+
+    button{
+      background:var(--primary); color:white; border:0; padding:12px 20px;
+      border-radius:12px; font-size:16px; font-weight:600; cursor:pointer;
+      transition:0.25s; animation: slideUp 1.2s ease;
+    }
+    button:hover{ filter:brightness(1.2); }
+
+    .container{
+      margin:0 auto; max-width:1300px; padding:20px;
+      display:grid; grid-template-columns:350px 1fr; gap:24px;
+      animation: slideUp 1.2s ease;
+    }
+
+    .sidebar{
+      background:var(--card); padding:16px; border-radius:var(--radius);
+      border:1px solid var(--glass); height:80vh; overflow:auto;
+    }
+
+    .item{
+      display:flex; gap:12px; padding:12px; border-radius:12px;
+      cursor:pointer; transition:.2s;
+    }
+    .item:hover{ background:var(--glass); }
+    .item strong{font-size:17px}
+    .item small{color:var(--muted)}
+
+    .details{
+      background:var(--card); padding:28px; border-radius:var(--radius);
+      border:1px solid var(--glass);
+    }
+
+    .heroimg{
+      width:100%; height:260px; border-radius:var(--radius);
+      background-size:cover; background-position:center;
+      margin-bottom:20px;
+    }
+
+    .factbox{
+      display:flex; gap:12px; flex-wrap:wrap;
+    }
+    .fact{
+      background:var(--glass); padding:12px 16px; border-radius:12px;
+      font-size:15px; color:var(--muted);
+    }
+
+    .special{
+      margin-top:20px; padding:20px;
+      background:linear-gradient(90deg,#0d4da333,#0a356f44);
+      border-radius:var(--radius);
+      border:1px solid #0d4da377;
+      animation: glow 1.6s infinite alternate;
+    }
+
+    /* Animations */
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes glow { 0% { box-shadow: 0 0 0 rgba(255,255,255,0.2); } 100% { box-shadow: 0 0 20px rgba(255,255,255,0.45); }}
+
+  .card {
+    animation: fadeIn 0.7s ease forwards;
+    transition: transform .3s ease, box-shadow .3s ease;
+  }
+  .card:hover {
+    transform: translateY(-8px) scale(1.02);
+    animation: glow 0.6s ease alternate infinite;
+  }
+
+  header {
+    animation: fadeIn 1.2s ease;
+  }
+
+  .hero {
+    animation: fadeIn 1s ease;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>⛷️ SkiGids Oostenrijk</h1>
+</header>
+
+<div class="searchbar">
+  <input id="zoek" placeholder="Zoek een skigebied in Oostenrijk..." />
+  <button onclick="zoekGebied()">Zoeken</button>
+</div>
+
+<div class="container">
+  <aside class="sidebar" id="lijst">
+  </aside>
+
+  <section class="details" id="details">
+    <div class="heroimg" id="foto"></div>
+    <h2 id="naam">Selecteer een Oostenrijks skigebied</h2>
+    <p id="beschrijving" style="color:var(--muted)">Alle grote skigebieden van Oostenrijk komen hier beschikbaar.</p>
+
+    <div class="factbox" id="facts"></div>
+    <div class="special" id="special" style="display:none">
+      <h3 id="specialTitel"></h3>
+      <p id="specialTekst"></p>
+    </div>
+  </section>
+</div>
+
+<script>
+  // ***************
+  // BASISDATA OOSTENRIJK (uitbreidbaar tot alle gebieden)
+  // ***************
+  const gebieden = [
+    { id:"mayrhofen", naam:"Mayrhofen", regio:"Tirol", hoogte:"630–3250 m", km:"159 km", liften:"57 liften", foto:"https://images.unsplash.com/photo-1600093463592-2c9c7a509a68", beschrijving:"Populair bij Nederlanders door bereikbaarheid, sfeer en uitdagende pistes.", special:{ titel:"Harakiri", tekst:"De steilste piste van Oostenrijk (78%)." } },
+    { id:"serfaus", naam:"Serfaus-Fiss-Ladis", regio:"Tirol", hoogte:"1200–2820 m", km:"214 km", liften:"68 liften", foto:"https://images.unsplash.com/photo-1610893663821-393137c39e8c", beschrijving:"Zeer familievriendelijk en modern met groot aanbod voor kinderen.", special:{ titel:"Family Park", tekst:"Groot funpark en thema-afdalingen." } },
+    { id:"solden", naam:"Sölden", regio:"Ötztal", hoogte:"1350–3340 m", km:"144 km", liften:"31 liften", foto:"https://images.unsplash.com/photo-1600508773512-44589a4d71d1", beschrijving:"Bekend om hoge sneeuwzekerheid en World Cup opening.", special:{ titel:"Rettenbach gletsjer", tekst:"Perfecte carving-condities op gletsjerpistes." } },
+
+    { id:"ischgl", naam:"Ischgl", regio:"Tirol", hoogte:"1377–2872 m", km:"239 km", liften:"45 liften", foto:"https://images.unsplash.com/photo-1542816417-5f6a9c50b42f", beschrijving:"Groot, modern gebied bekend om nightlife en brede pistes.", special:{ titel:"Paznaun-route", tekst:"Lange verbinding naar Samnaun (CH)." } },
+    { id:"kitzbuhel", naam:"Kitzbühel", regio:"Tirol", hoogte:"800–2000 m", km:"234 km", liften:"57 liften", foto:"https://images.unsplash.com/photo-1512389142860-9c449e58a543", beschrijving:"Legendarisch skigebied met de beroemde Hahnenkamm-race.", special:{ titel:"Streif", tekst:"Een van de bekendste en gevaarlijkste downhill-races ter wereld." } },
+    { id:"saalbach", naam:"Saalbach-Hinterglemm", regio:"Salzburgerland", hoogte:"830–2096 m", km:"270 km", liften:"70 liften", foto:"https://images.unsplash.com/photo-1486911278841-89b14e7221d1", beschrijving:"Skicircus met enorme variatie aan pistes.", special:{ titel:"The Challenge", tekst:"Een mega-rondje van 65 km skiën in 1 dag." } },
+    { id:"zellamsee", naam:"Zell am See - Kaprun", regio:"Salzburgerland", hoogte:"760–3030 m", km:"138 km", liften:"49 liften", foto:"https://images.unsplash.com/photo-1600093463316-46e97d3e6c02", beschrijving:"Uniek door meerzicht en gletsjer op de Kitzsteinhorn.", special:{ titel:"Gletsjerroute", tekst:"Sneeuwzeker tot ver in het voorjaar." } },
+    { id:"obertauern", naam:"Obertauern", regio:"Salzburgerland", hoogte:"1630–2313 m", km:"100 km", liften:"26 liften", foto:"https://images.unsplash.com/photo-1543357480-4e38dba870c8", beschrijving:"Zeer sneeuwzeker gebied met perfecte condities.", special:{ titel:"Tauernrunde", tekst:"Complete ronde door het hele gebied." } },
+    { id:"flachau", naam:"Flachau", regio:"Salzburgerland", hoogte:"920–1990 m", km:"210 km", liften:"70 liften", foto:"https://images.unsplash.com/photo-1517685352821-92cf88aee5a5", beschrijving:"Onderdeel van Ski Amadé, modern en breed opgezet.", special:{ titel:"World Cup piste", tekst:"Bekend van de dames slalom." } },
+    { id:"schladming", naam:"Schladming", regio:"Steiermark", hoogte:"750–2015 m", km:"230 km", liften:"81 liften", foto:"https://images.unsplash.com/photo-1610894076525-bd2e3fd5fa0b", beschrijving:"4-Bergen Skischaukel met topkwaliteit pistes.", special:{ titel:"Planai", tekst:"Host van grote internationale wedstrijden." } },
+
+    { id:"kaunertal", naam:"Kaunertaler Gletscher", regio:"Tirol", hoogte:"2150–3160 m", km:"55 km", liften:"9 liften", foto:"https://images.unsplash.com/photo-1523287562758-66c7fc58967f", beschrijving:"Rustige gletsjer met brede pistes.", special:{ titel:"Gletsjerstraat", tekst:"Spectaculair uitzicht tot hoog in de Alpen." } },
+    { id:"stuben", naam:"St. Anton - Stuben - Lech", regio:"Tirol", hoogte:"1304–2811 m", km:"305 km", liften:"88 liften", foto:"https://images.unsplash.com/photo-1517230878791-4d28214057c2", beschrijving:"Arlberg: freeride, luxe en enorm gebied.", special:{ titel:"Valluga", tekst:"Iconisch freeride-terrein voor experts." } },
+    { id:"lech", naam:"Lech Zürs", regio:"Vorarlberg", hoogte:"1450–2450 m", km:"305 km", liften:"88 liften", foto:"https://images.unsplash.com/photo-1518684079-bfc99d2a0a02", beschrijving:"Chic, sneeuwrijk en zeer geliefd.", special:{ titel:"Weißer Ring", tekst:"Een beroemde ski-ronde door Lech en Zürs." } },
+    { id:"badgastein", naam:"Bad Gastein", regio:"Salzburgerland", hoogte:"1002–2686 m", km:"200 km", liften:"50 liften", foto:"https://images.unsplash.com/photo-1516216628859-9bccecab13ca", beschrijving:"Grandioze thermen + skiën in Ski Amadé.", special:{ titel:"Stubnerkogel", tekst:"Hangbrug met spectaculair uitzicht." } },
+    { id:"koralpe", naam:"Koralpe", regio:"Karinthië", hoogte:"1500–2100 m", km:"28 km", liften:"9 liften", foto:"https://images.unsplash.com/photo-1482192596544-9eb780fc7f66", beschrijving:"Rustig en zonrijk familiegebied.", special:{ titel:"Panorama-route", tekst:"Uitzicht op Slovenië en Italië." } },
+    { id:"goldeck", naam:"Goldeck", regio:"Karinthië", hoogte:"550–2142 m", km:"25 km", liften:"7 liften", foto:"https://images.unsplash.com/photo-1516116216624-53e697fedbea", beschrijving:"Bekend om de langste zwarte piste.", special:{ titel:"Black Eagle", tekst:"8,5 km lange uitdagende afdaling." } },
+    { id:"zauchensee", naam:"Zauchensee", regio:"Salzburgerland", hoogte:"1350–2188 m", km:"45 km", liften:"15 liften", foto:"https://images.unsplash.com/photo-1486911278841-89b14e7221d1", beschrijving:"Sneeuwzeker en sportief World Cup gebied.", special:{ titel:"Gamskogel", tekst:"Steile pistes met uitdaging." } },
+    { id:"molltal", naam:"Mölltaler Gletscher", regio:"Karinthië", hoogte:"1200–3122 m", km:"71 km", liften:"9 liften", foto:"https://images.unsplash.com/photo-1600612371968-b239255ca7e4", beschrijving:"Gletsjer met lange, open pistes.", special:{ titel:"Eissee", tekst:"Panoramaroute met uitzicht op Grossglockner." } },
+    { id:"damuls", naam:"Damüls-Mellau", regio:"Vorarlberg", hoogte:"700–2100 m", km:"109 km", liften:"29 liften", foto:"https://images.unsplash.com/photo-1512389142860-9c449e58a543", beschrijving:"Het sneeuwrijkste dorp van de wereld.", special:{ titel:"Ragazerblick", tekst:"Prachtige panoramatocht over bergkammen." } }
+  ];
+
+  function renderLijst(){
+    document.getElementById('lijst').innerHTML = gebieden.map(g=>`
+      <div class='item' onclick='toon("${g.id}")'>
+        <div>
+          <strong>${g.naam}</strong>
+          <small>${g.regio}</small>
+        </div>
+      </div>`).join('');
+  }
+
+  function toon(id){
+    const g = gebieden.find(x=>x.id===id);
+    document.getElementById('naam').textContent = g.naam;
+    document.getElementById('beschrijving').textContent = g.beschrijving;
+    document.getElementById('foto').style.backgroundImage = `url(${g.foto})`;
+
+    document.getElementById('facts').innerHTML = `
+      <div class='fact'><strong>Regio:</strong> ${g.regio}</div>
+      <div class='fact'><strong>Hoogte:</strong> ${g.hoogte}</div>
+      <div class='fact'><strong>Piste:</strong> ${g.km}</div>
+      <div class='fact'><strong>Liften:</strong> ${g.liften}</div>
+    `;
+
+    if(g.special){
+      document.getElementById('specialTitel').textContent = g.special.titel;
+      document.getElementById('specialTekst').textContent = g.special.tekst;
+      document.getElementById('special').style.display = 'block';
+    }
+  }
+
+  function zoekGebied(){
+    const q = document.getElementById('zoek').value.toLowerCase();
+    const f = gebieden.filter(g=> g.naam.toLowerCase().includes(q) || g.regio.toLowerCase().includes(q));
+
+    document.getElementById('lijst').innerHTML = f.map(g=>`
+      <div class='item' onclick='toon("${g.id}")'>
+        <div>
+          <strong>${g.naam}</strong>
+          <small>${g.regio}</small>
+        </div>
+      </div>`).join('');
+  }
+
+  renderLijst();
+</script>
+
 </body>
 </html>
